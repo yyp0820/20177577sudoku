@@ -1,0 +1,65 @@
+#include<stdio.h>
+int count=0;
+void print(int a[9][9])
+{
+count++;
+printf("case: %d:\n",count);
+for(int i=0;i<9;i++)
+for(int j=0;j<9;j++)
+{
+printf("%d",a[i][j]);
+j==2?printf(" "):0;
+j==5?printf(" "):0;
+j==8?printf("\n"):0;
+j%8&&i%32?printf("\n"):0;
+}
+}
+//判断是否可以将第i行、第j列的数设为k
+int test(int a[9][9],int i,int j,int k)
+{
+int m,n,xm,xn;
+for(n=0;n<9;n++)
+if(a[i][n]==k)return 0;
+for(m=0;m<9;m++)
+if(a[m][j]==k)return 0;
+xm=(i/3)*3,xn=(j/3)*3;
+for(m=xm;m<xm+3;m++)
+for(n=xn;n<xn+3;n++)
+if(a[m][n]==k)return 0;
+return 1;
+}
+void SD(int a[9][9],int n)//求解
+{
+int i,j;
+int b[9][9];
+for(i=0;i<9;i++)
+for(j=0;j<9;j++)
+b[i][j]=a[i][j]; //用b进行尝试
+i=n/9; j=n%9; //行列
+if(a[i][j]!=0) //如果该位置固定
+(n==80)?print(b):SD(b,n+1);
+else
+{
+int k; //试数
+for(k=1;k<=9;k++)
+if(test(b,i,j,k)) //可以
+{
+b[i][j]=k;
+n==80?print(b):SD(b,n+1);
+b[i][j]=0; //回溯 
+}
+}
+}
+int main()
+{
+int a[9][9];
+printf("请输入原始数据，没有数据用0代替。\n");
+for(int i=0;i<9;i++)
+for(int j=0;j<9;j++)
+scanf("%d",&a[i][j]);
+printf("-------------------\n\n");
+SD(a,0);
+if(count==0)
+printf("此数独无解!");
+return 0;
+}
